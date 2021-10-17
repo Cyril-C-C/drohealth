@@ -15,8 +15,8 @@ const LogItem = ({ log }) => {
         <br />
         <span className='grey-text'>
           <span className='black-text'>Written by {authors}</span> last
-          published by <span className='black-text'>{publisher}</span> on{' '}
-          <Moment format='MMMM Do YYYY, h:mm:ss a'>{released}</Moment>
+          published by <span className='black-text'>{publisher}</span> in{' '}
+          <Moment format='MMMM Do YYYY'>{released}</Moment>
         </span>
         <a href={url} className='secondary-content'>
           {isbn}

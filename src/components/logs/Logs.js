@@ -4,7 +4,7 @@ import LogItem from './LogItem';
 import PropTypes from 'prop-types';
 import { getLogs } from '../../actions/logActions';
 
-const Logs = ({ log: { logs, loading }, getLogs }) => {
+const Logs = ({ log: { logs, loading, isbn }, getLogs }) => {
   useEffect(() => {
     getLogs();
     //eslint-disable-next-line
@@ -20,7 +20,7 @@ const Logs = ({ log: { logs, loading }, getLogs }) => {
       {!loading && logs.length === 0 ? (
         <p className='center'>No books to show...</p>
       ) : (
-        logs.map((log) => <LogItem log={log} key={log.id} />)
+        logs.map((log) => <LogItem log={log} key={log.isbn} />)
       )}
     </ul>
   );

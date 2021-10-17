@@ -3,6 +3,8 @@ import { Provider } from 'react-redux';
 
 import Navbar from './components/layout/Navbar';
 import Spinner from './components/layout/Spinner';
+import AddBtn from './components/layout/AddBtn';
+import Page from './components/layout/Page';
 import Logs from './components/logs/Logs';
 import store from './store';
 
@@ -20,11 +22,13 @@ const App = () => {
     setTimeout(() => {
       setLoading(false);
     }, 3000);
+  }, []);
 
+  useEffect(() => {
     // Init Materialize JS
 
     M.AutoInit();
-  }, []);
+  });
 
   return (
     <Provider store={store}>
@@ -32,8 +36,9 @@ const App = () => {
         <Fragment>
           <Navbar />
           <section className='container'>
-            {/* <AddBtn /> */}
+            <AddBtn />
             <Logs />
+            <Page />
           </section>
         </Fragment>
       ) : (
