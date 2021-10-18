@@ -20,7 +20,7 @@ const Logs = ({ log: { logs, loading, isbn }, getLogs }) => {
       {!loading && logs.length === 0 ? (
         <p className='center'>No books to show...</p>
       ) : (
-        logs.map((log) => <LogItem log={log} key={log.isbn} />)
+        logs.map((log) => <LogItem log={log} key={isbn} />)
       )}
     </ul>
   );

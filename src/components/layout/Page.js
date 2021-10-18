@@ -1,37 +1,66 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { getLogs } from '../../actions/logActions';
 
 const Page = () => {
+  const { loading, data } = getLogs();
+  const [page, setPage] = useState(0);
+
+  if (!data) return [loading];
+
+  const nextPage = () => {
+    setPage((oldPage) => {
+      let nextPage = oldPage + 1;
+      if (nextPage > data.length - 1) {
+        nextPage = 0;
+      }
+      return nextPage;
+    });
+  };
+  const prevPage = () => {
+    setPage((oldPage) => {
+      let prevPage = oldPage - 1;
+      if (prevPage < 0) {
+        prevPage = data.length - 1;
+      }
+      return prevPage;
+    });
+  };
+
+  const handlePage = (index) => {
+    setPage(index);
+  };
+
   return (
     <section>
-      <ul className='pagination center'>
-        <li className='disabled'>
-          <a href='#!'>
-            <i className='material-icons'>chevron_left</i>
-          </a>
-        </li>
-        <li className='active'>
-          <a href='/characters?page=1&pageSize=10'>1</a>
-        </li>
-        <li className='waves-effect'>
-          <a href='/characters?page=2&pageSize=10'>2</a>
-        </li>
-        <li className='waves-effect'>
-          <a href='/characters?page=3&pageSize=10'>3</a>
-        </li>
-        <li className='waves-effect'>
-          <a href='/characters?page=4&pageSize=10'>4</a>
-        </li>
-        <li className='waves-effect'>
-          <a href='/characters?page=5&pageSize=10'>5</a>
-        </li>
-        <li className='waves-effect'>
-          <a href='#!'>
-            <i className='material-icons'>chevron_right</i>
-          </a>
-        </li>
-      </ul>
+      {!loading && (
+        <div className='btn-container'>
+          <button className='prev-btn' onClick={prevPage}>
+            prev
+          </button>
+          {data.map((item, index) => {
+            return (
+              <button
+                key={index}
+                className={`page-btn ${index === page ? 'active-btn' : null}`}
+                onClick={() => handlePage(index)}
+              >
+                {index + 1}
+              </button>
+            );
+          })}
+          <button className='next-btn' onClick={nextPage}>
+            next
+          </button>
+        </div>
+      )}
     </section>
   );
 };
 
-export default Page;
+Page.propTypes = {
+  getLogs: PropTypes.func.isRequired,
+};
+
+export default connect(null, { getLogs })(Page);
