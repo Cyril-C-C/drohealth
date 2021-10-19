@@ -1,24 +1,12 @@
-import { SET_LOADING, GET_LOGS, LOGS_ERROR, SEARCH_LOGS } from './types';
-import Paginate from './../utils/Paginate';
+import { SET_LOADING, GET_LOGS, LOGS_ERROR, SEARCH_LOGS, SEARCH_CHARACTERS } from './types';
 
 // Get logs from server
 export const getLogs = () => async (dispatch) => {
   try {
     setLoading();
 
-    const res = await Promise.all(
-      [
-        fetch('/books').then((response) => response.json()),
-        fetch('/characters?page=1&pageSize=10').then((response) =>
-          response.json()
-        ),
-      ].map((promise) => promise.catch((error) => error))
-    );
-    const [data, setData] = await res.json();
-
-    // For infinite loading (Pagination)
-
-    setData(Paginate(data));
+    const res = await fetch('/books')
+    const data = await res.json();
 
     dispatch({
       type: GET_LOGS,
@@ -30,20 +18,34 @@ export const getLogs = () => async (dispatch) => {
 };
 
 // Search server logs
+
+// Using books endpoint
 export const searchLogs = (text) => async (dispatch) => {
   try {
     setLoading();
 
-    const res = await Promise.all(
-      [
-        fetch(`/books?q=${text}`).then((response) => response.json()),
-        fetch(`/characters?q=${text}`).then((response) => response.json()),
-      ].map((promise) => promise.catch((error) => error))
-    );
+    const res = await fetch(`/books?q=${text}`);
     const data = await res.json();
 
     dispatch({
       type: SEARCH_LOGS,
+      payload: data,
+    });
+  } catch (err) {
+    dispatch({ type: LOGS_ERROR, payload: err.response.statusText });
+  }
+};
+
+// Using characters endpoint
+export const searchCharacters = (text) => async (dispatch) => {
+  try {
+    setLoading();
+
+    const res = await fetch(`/characters?q=${text}`);
+    const data = await res.json();
+
+    dispatch({
+      type: SEARCH_CHARACTERS,
       payload: data,
     });
   } catch (err) {

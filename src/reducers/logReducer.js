@@ -3,6 +3,7 @@ import {
   GET_LOGS,
   LOGS_ERROR,
   SEARCH_LOGS,
+  SEARCH_CHARACTERS,
 } from '../actions/types';
 
 const initialState = {
@@ -22,6 +23,7 @@ export default (state = initialState, action) => {
         loading: false,
       };
     case SEARCH_LOGS:
+    case SEARCH_CHARACTERS:
       return {
         ...state,
         logs: action.payload,

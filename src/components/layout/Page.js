@@ -1,66 +1,48 @@
-import React, { useState } from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import { getLogs } from '../../actions/logActions';
+import React, { useState, useRef, useCallback } from 'react';
+import useBookSearch from '../../utils/useBookSearch';
 
-const Page = () => {
-  const { loading, data } = getLogs();
-  const [page, setPage] = useState(0);
+export default function Page() {
+  const [query, setQuery] = useState('');
+  const [pageNumber, setPageNumber] = useState(1);
 
-  if (!data) return [loading];
+  const { books, hasMore, loading } = useBookSearch(query, pageNumber);
 
-  const nextPage = () => {
-    setPage((oldPage) => {
-      let nextPage = oldPage + 1;
-      if (nextPage > data.length - 1) {
-        nextPage = 0;
-      }
-      return nextPage;
-    });
-  };
-  const prevPage = () => {
-    setPage((oldPage) => {
-      let prevPage = oldPage - 1;
-      if (prevPage < 0) {
-        prevPage = data.length - 1;
-      }
-      return prevPage;
-    });
-  };
+  const observer = useRef();
+  const lastBookElementRef = useCallback(
+    (node) => {
+      if (loading) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasMore) {
+          setPageNumber((prevPageNumber) => prevPageNumber + 1);
+        }
+      });
+      if (node) observer.current.observe(node);
+    },
+    [loading, hasMore]
+  );
 
-  const handlePage = (index) => {
-    setPage(index);
-  };
+  function handleSearch(e) {
+    setQuery(e.target.value);
+    setPageNumber(1);
+  }
 
   return (
-    <section>
-      {!loading && (
-        <div className='btn-container'>
-          <button className='prev-btn' onClick={prevPage}>
-            prev
-          </button>
-          {data.map((item, index) => {
-            return (
-              <button
-                key={index}
-                className={`page-btn ${index === page ? 'active-btn' : null}`}
-                onClick={() => handlePage(index)}
-              >
-                {index + 1}
-              </button>
-            );
-          })}
-          <button className='next-btn' onClick={nextPage}>
-            next
-          </button>
-        </div>
-      )}
-    </section>
+    <>
+      <input type='text' value={query} onChange={handleSearch}></input>
+      {books.map((book, index) => {
+        if (books.length === index + 1) {
+          return (
+            <div ref={lastBookElementRef} key={book}>
+              {book}
+            </div>
+          );
+        } else {
+          return <div key={book}>{book}</div>;
+        }
+      })}
+      {/* <div>{loading && 'Loading...'}</div>
+      <div>{error && 'Error'}</div> */}
+    </>
   );
-};
-
-Page.propTypes = {
-  getLogs: PropTypes.func.isRequired,
-};
-
-export default connect(null, { getLogs })(Page);
+}
