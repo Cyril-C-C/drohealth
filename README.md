@@ -23,7 +23,7 @@ HTML5.2; CSS3 and Materialize; JavaScript Library: React and Preprocessor: TypeS
 To be tested using variety of devices for all tests, including Position Flexibility.
 
 # Tests result
-All functionalities have passed all tests.
+All functionalities have passed all tests, except for search (filter data).
 
 # Costs
 To be negotiated.

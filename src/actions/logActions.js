@@ -20,11 +20,11 @@ export const getLogs = () => async (dispatch) => {
 // Search server logs
 
 // Using books endpoint
-export const searchLogs = (text) => async (dispatch) => {
+export const searchLogs = (log, text) => async (dispatch) => {
   try {
     setLoading();
 
-    const res = await fetch(`/books?q=${text}`);
+    const res = await fetch(`/books/?${log.id}&q=${text}`);
     const data = await res.json();
 
     dispatch({
@@ -37,11 +37,11 @@ export const searchLogs = (text) => async (dispatch) => {
 };
 
 // Using characters endpoint
-export const searchCharacters = (text) => async (dispatch) => {
+export const searchCharacters = (log, text) => async (dispatch) => {
   try {
     setLoading();
 
-    const res = await fetch(`/characters?q=${text}`);
+    const res = await fetch(`/characters/?${log.id}&q=${text}`);
     const data = await res.json();
 
     dispatch({
